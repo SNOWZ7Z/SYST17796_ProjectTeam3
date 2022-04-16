@@ -1,5 +1,6 @@
 package Game;
 
+import CardsAndDecks.Deck;
 import Player.Dealer;
 import Player.Player;
 import java.util.Scanner;
@@ -7,15 +8,19 @@ import java.util.Scanner;
 public class GameView {
     private String gameName = "Generic Blackjack 1v1";
     private Boolean running;
-    private Dealer dealer;
+    private Dealer dealer = new Dealer();
     private Player player = new Player("Player1");
+    Deck deck = new Deck();
+            
     
     Scanner sc = new Scanner(System.in);
     
     //TODO FILL THE GAME COMMANDS HERE
     public void play(){
+        
         helloAndName();
         ruleExplanation();
+        
     }//Play ends    
 
     public void declareWinner(){
