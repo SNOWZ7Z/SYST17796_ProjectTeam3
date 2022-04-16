@@ -70,15 +70,10 @@ public class GameView {
     
     public void ruleExplanation(){
         System.out.println("Would you like me to explain to you the rules of the game?\n(Y)ES    or    (N)O");
-        try {
             String desition = sc.nextLine();
             if (desition.charAt(0) == 'Y' || desition.charAt(0) == 'y') {
                 System.out.println(rulesText());
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        
     }
     
     public String rulesText(){
