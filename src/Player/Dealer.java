@@ -2,6 +2,7 @@ package Player;
 
 import CardsAndDecks.Card;
 import CardsAndDecks.Deck;
+import java.util.*;
 
 
 public class Dealer extends Player{
@@ -11,7 +12,7 @@ public class Dealer extends Player{
     }
     
     public Card giveRandomCard(Deck deck) {
-        
+               
         return deck.getRandomCard();
     } // give a Random Card Ends
     
