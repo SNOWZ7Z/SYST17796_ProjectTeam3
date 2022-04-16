@@ -53,8 +53,5 @@ public class Player {
     public void setHand(GroupOfCards hand) {
         this.hand = hand;
     }
-    
-    
-    
-    
+     
 }
