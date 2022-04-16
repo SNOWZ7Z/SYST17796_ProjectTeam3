@@ -83,9 +83,15 @@ public class GameView {
     
     public String rulesText(){
         
-        return "1. You must....\n"
-                + "2. Take care of your money\n"
-                + "You will be able to...... etc etc";
+        return "1. The main goal of BlackJack is to beat the dealer's cards with your own.\n"
+                + "2. To beat the dealer, you must not go over 21 and either outscore the dealer or have him bust.\n"
+                + "3. At the start of the round the dealer will give out a card to the every player including themselves.\n"
+                + "4. From this point the player can hold, hit, stand, or double down (Once per each round).\n"
+                + "5. Choosing 'Hold' will allow not to bet for that round, 'Hit', which will"
+                + " add another card to get closer to 21, 'Stand',\n"
+                + " which will make you not draw a card,"
+                + " and 'Double Down', which will double the amount that is being bet.\n"
+                + "6. Each Card has it's own value, the numbered cards have face value while suited cards are worth 10.";
     }
     
     
