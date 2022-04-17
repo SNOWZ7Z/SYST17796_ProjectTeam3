@@ -134,8 +134,34 @@ public class GameView {
         
     }
     
-    public void selectAction() {
-        
+    public void performtAction() {
+        System.out.println("Would you like to (H)IT, (S)TAND, H(O)LD, or (D)OUBLE DOWN?");
+        while (true) {            
+            actionOption = sc.nextLine().charAt(0);
+            
+            switch (actionOption) {
+                case 'H':
+                    
+                    break;
+                    
+                case 'S':
+                    
+                    break;
+                    
+                case 'O':
+                    
+                    break;
+                    
+                case 'D':
+                    
+                    break;
+                    
+                default:
+                    System.out.println("Thats not a valid input");
+                    continue;
+            }
+        }
     }
-    
+    //TODO
+    //Insert the action methods from player above.
 }
