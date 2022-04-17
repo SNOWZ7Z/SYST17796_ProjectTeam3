@@ -14,10 +14,6 @@ public class Player {
         this.money = 100;
     }
 
-    public void split() {
-
-    }
-
     public void hit(Card card) {
         this.hand.addCard(card);
     }
