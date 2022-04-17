@@ -47,6 +47,6 @@ public class Deck {
     public static ArrayList<Card> getFullDeck() {
         return fullDeck;
     }
-
- 
+    
+    
 }

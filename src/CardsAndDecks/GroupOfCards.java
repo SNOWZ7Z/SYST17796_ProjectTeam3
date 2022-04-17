@@ -22,6 +22,13 @@ public class GroupOfCards{
     public void addCard(Card card) {
         this.hand.add(card);
     }
-    
-    
+
+    @Override
+    public String toString() {
+        String fullHand = "";
+        for (Card card : hand) {
+             fullHand += "You have a " + card.value + " of " + card.suit + "\n";
+        }
+        return fullHand;
+    }   
 }
