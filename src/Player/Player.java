@@ -26,9 +26,6 @@ public class Player {
         System.out.println(getName() + " stands!");
     }
 
-    public void doubleDown(int bet) {
-
-    }
 
     public int getMoney() {
 
