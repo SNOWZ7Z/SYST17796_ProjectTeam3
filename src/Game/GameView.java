@@ -1,5 +1,6 @@
 package Game;
 
+import CardsAndDecks.Card;
 import CardsAndDecks.Deck;
 import Player.Dealer;
 import Player.Player;
@@ -105,7 +106,7 @@ public class GameView {
     public void gameBegins(){
         System.out.println("\nBefore we begin, here is the initial balance for you to start betting:");
         System.out.println(player.getName() + " received " + player.getMoney());
-        System.out.println("\nLet the game begin\n");
+        System.out.println("\nLet the game begin!\n");
     }
     
     public void offerBetting(){
@@ -127,25 +128,26 @@ public class GameView {
     }
     
     public void cardDealing(){
-        System.out.println("\nAlright, here is your card");
+        System.out.println("\nAlright, here are your cards");
         //Code to add a random card to hand
-        player.addToHand(dealer.giveRandomCard());
-        System.out.println(player.getHand().toString());
-        
+        for (int i = 0; i < 2; i++) {
+            player.addToHand(dealer.giveRandomCard());
+            System.out.println(player.getHand().toString());   
+        }
     }
     
     public void performtAction() {
         System.out.println("Would you like to (H)IT, (S)TAND, H(O)LD, or (D)OUBLE DOWN?");
         while (true) {            
             actionOption = sc.nextLine().charAt(0);
-            
+
             switch (actionOption) {
                 case 'H':
-                    
+                    this.player.hit(this.dealer.giveRandomCard());
                     break;
                     
                 case 'S':
-                    
+                    this.player.stand();
                     break;
                     
                 case 'O':
@@ -160,6 +162,7 @@ public class GameView {
                     System.out.println("Thats not a valid input");
                     continue;
             }
+            this.dealer.evaluateMove();
         }
     }
     //TODO
