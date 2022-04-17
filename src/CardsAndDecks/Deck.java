@@ -40,8 +40,10 @@ public class Deck {
     }
     
     public Card getRandomCard(){
-        int randomCardInt = (int)Math.floor(Math.random()* 52);
-        return fullDeck.get(randomCardInt); //RETURN A RANDOM CARD
+        int randomCardIndex = (int) Math.floor(Math.random() * 52);
+        Card randomCard = this.fullDeck.get(randomCardIndex);
+        this.fullDeck.remove(randomCardIndex);
+        return randomCard; //RETURN A RANDOM CARD
     }
 
     public static ArrayList<Card> getFullDeck() {
