@@ -8,6 +8,8 @@ import java.util.Scanner;
 public class GameView {
     private String gameName = "Generic Blackjack 1v1";
     private Boolean running;
+    private int bet = 0;
+    private char actionOption;
     private Dealer dealer = new Dealer();
     private Player player = new Player("Player1");
     Deck deck = new Deck();
@@ -18,8 +20,14 @@ public class GameView {
     //TODO FILL THE GAME COMMANDS HERE
     public void play(){
         
+        deck.populateDeck();
+        dealer.getDeckReady();
+        
         helloAndName();
         ruleExplanation();
+        gameBegins();
+        offerBetting();
+        cardDealing();
         
     }//Play ends    
 
@@ -94,5 +102,40 @@ public class GameView {
                 + "6. Each Card has it's own value, the numbered cards have face value while suited cards are worth 10.";
     }
     
+    public void gameBegins(){
+        System.out.println("\nBefore we begin, here is the initial balance for you to start betting:");
+        System.out.println(player.getName() + " received " + player.getMoney());
+        System.out.println("\nLet the game begin\n");
+    }
+    
+    public void offerBetting(){
+        System.out.println("How much would you like to bet this round");     
+        for (;;) { //The funky "for"
+            System.out.print("Bet amount: ");
+            try {
+                bet = sc.nextInt();
+                if (bet <= 0 || bet > player.getMoney()) {
+                    throw new Exception();
+                }
+                break;
+            } catch (Exception e) {
+                System.out.println("Bets are meant to be a positive number, that is no more than the amount of money you have");
+                sc.nextLine();
+                continue;
+            }       
+        }   
+    }
+    
+    public void cardDealing(){
+        System.out.println("\nAlright, here is your card");
+        //Code to add a random card to hand
+        player.addToHand(dealer.giveRandomCard());
+        System.out.println(player.getHand().toString());
+        
+    }
+    
+    public void selectAction() {
+        
+    }
     
 }
