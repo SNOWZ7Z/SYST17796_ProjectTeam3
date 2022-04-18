@@ -82,7 +82,6 @@ public class GameView {
      * *
      * Getter and setters end
      */
-
     /**
      * Game voice lines interactions and methods
      */
@@ -153,10 +152,12 @@ public class GameView {
             switch (actionOption) {
                 case 'H':
                     this.player.hit(this.dealer.giveRandomCard());
+                    System.out.println(player.getName() + " hits!");
                     break;
 
                 case 'S':
                     this.player.stand();
+                    System.out.println(player.getName() + " stands!");
                     break;
 
                 default:
