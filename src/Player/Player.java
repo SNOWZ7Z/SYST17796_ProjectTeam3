@@ -46,7 +46,7 @@ public class Player {
     }
 
     public CardsInHand getHand() {
-        return hand;
+        return this.hand;
     }
 
     public void setHand(CardsInHand hand) {
@@ -55,6 +55,14 @@ public class Player {
 
     public void addToHand(Card card) {
         this.hand.addCard(card);
+    }
+    
+    public int valueOfCards(){
+        int total = 0;
+        for (Card card: hand.getHand()) {
+            total += card.getValue();
+        }
+        return total;
     }
 
 }

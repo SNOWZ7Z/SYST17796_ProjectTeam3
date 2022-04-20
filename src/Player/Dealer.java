@@ -25,7 +25,7 @@ public class Dealer extends Player{
         return returnCard; //RETURN A RANDOM CARD
     } // give a Random Card Ends
     
-    public void evaluateMove() {
+    public void evaluateMove(Player player) {
         
     } // Evaluate Move Ends
     

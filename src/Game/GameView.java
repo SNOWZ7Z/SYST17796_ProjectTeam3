@@ -5,6 +5,7 @@ import CardsAndDecks.Deck;
 import Player.Dealer;
 import Player.Player;
 import java.util.Scanner;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -12,6 +13,8 @@ public class GameView {
 
     private String gameName = "Generic Blackjack 1v1";
     private Boolean running;
+    private Boolean roundStatus;
+    private Boolean dealerRoundStatus;
     private int bet = 0;
     private char actionOption;
     private Dealer dealer = new Dealer();
@@ -21,7 +24,7 @@ public class GameView {
     Scanner sc = new Scanner(System.in);
 
     //TODO FILL THE GAME COMMANDS HERE
-    public void play() {
+    public void play() throws InterruptedException {
 
         deck.populateDeck();
         dealer.getDeckReady();
@@ -31,6 +34,7 @@ public class GameView {
         gameBegins();
         offerBetting();
         cardDealing();
+        performtAction();
         performAction();
 
     }//Play ends    
@@ -96,16 +100,12 @@ public class GameView {
         System.out.println("Nice to meet you " + player.getName());
     }
 
-    public void ruleExplanation() {
+    public void ruleExplanation() throws InterruptedException {
         System.out.println("Would you like me to explain to you the rules of the game?\n(Y)ES    or    (N)O");
-        String decision = sc.nextLine();
-        if (decision.charAt(0) == 'Y' || decision.charAt(0) == 'y') {
-            try {
-                System.out.println(rulesText());
-                Thread.sleep(2000);
-            } catch (InterruptedException ex) {
-                Logger.getLogger(GameView.class.getName()).log(Level.SEVERE, null, ex);
-            }
+        String desition = sc.nextLine();
+        if (desition.charAt(0) == 'Y' || desition.charAt(0) == 'y') {
+            System.out.println(rulesText());
+            TimeUnit.SECONDS.sleep(7);
         }
     }
 
@@ -137,6 +137,7 @@ public class GameView {
             System.out.print("Bet amount: ");
             try {
                 bet = sc.nextInt();
+                sc.nextLine();
                 if (bet <= 0 || bet > player.getMoney()) {
                     throw new Exception();
                 }
@@ -162,29 +163,78 @@ public class GameView {
         System.out.println(player.getHand().toString());
     }
 
-    public void performAction() {
-        System.out.println("Would you like to (H)IT or (S)TAND?");
+    public void performtAction() {
         while (true) {
-            String continueAction = sc.next();
-            actionOption = Character.toUpperCase(continueAction.charAt(0));
+            System.out.println("Would you like to (H)IT, (S)TAND?");
+            try {
+                actionOption = sc.nextLine().charAt(0);
 
             switch (actionOption) {
                 case 'H':
                     this.player.hit(this.dealer.giveRandomCard());
                     System.out.println(player.getName() + " hits!");
+                    System.out.println(player.getHand().toString());
+                    System.out.println("The total value of the cards is " + player.valueOfCards());
                     break;
 
                 case 'S':
                     this.player.stand();
-                    break;
+                    System.out.println("The total value of the cards is " + player.valueOfCards());
 
+                    break;
+                   
                 default:
                     System.out.println("Thats not a valid input");
                     continue;
             }
-            this.dealer.evaluateMove();
-        }
+            this.dealer.evaluateMove(this.player);
+            
+            } catch (Exception e) {
+                System.out.println("Thats not a valid input");
+                    continue;
+            }
+            
+            evaluateRound();
+            if (roundStatus) {
+                break;
+            } else {
+                dealerPerforAction();
+                if (!dealerRoundStatus) {
+                    break;
+                }
+            }
+        }//While ends
+        //TODO EVALUATE IF LOST ROUND OR NOT & BOT ACTION
     }
-    //TODO
+    
+    public void dealerPerforAction(){
+            int chances = (int) Math.floor(Math.random()*4);
+            if (chances != 1) {
+                System.out.println("Dealer went over 21, YOU WIN THE ROUND!");
+                player.addMoney(bet);
+                System.out.println("You now have $" + player.getMoney());
+                this.bet = 0;
+                dealerRoundStatus = false;
+            } else {
+                System.out.println("Dealer drew a card...he is not out yet.");
+                dealerRoundStatus = true;
+            }
+            
+    }
+    //TODO EVALUATE LOST METHOD HERE    
+    public void evaluateRound(){
+        if (player.valueOfCards() > 21) {
+            this.roundStatus = true;
+            System.out.println("Oh, It seems like you've gone over the maximum\nYou Lose the round");
+            player.addMoney(-(bet));
+            System.out.println("You now have $" + player.getMoney());
+            this.bet = 0;
+        } else {
+            this.roundStatus = false;
+        }
+        
+    }
     //Insert the action methods from player above.
+    
+    //TODO IMPLEMENT THE EVALUATE GAME
 }

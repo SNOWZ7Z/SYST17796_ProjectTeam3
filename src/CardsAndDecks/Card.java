@@ -14,7 +14,9 @@ public class Card {
     public String toString() {
         return "The card is a " + this.value + " of " + this.suit;
     }
-    
-    
+
+    public int getValue() {
+        return value;
+    }
     
 }
