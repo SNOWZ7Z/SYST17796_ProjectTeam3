@@ -11,6 +11,8 @@ public class GameView {
 
     private String gameName = "Generic Blackjack 1v1";
     private Boolean running;
+    private Boolean roundStatus;
+    private Boolean dealerRoundStatus;
     private int bet = 0;
     private char actionOption;
     private Dealer dealer = new Dealer();
@@ -149,8 +151,8 @@ public class GameView {
     }
 
     public void performtAction() {
-        System.out.println("Would you like to (H)IT, (S)TAND?");
         while (true) {
+            System.out.println("Would you like to (H)IT, (S)TAND?");
             try {
                 actionOption = sc.nextLine().charAt(0);
 
@@ -164,7 +166,7 @@ public class GameView {
 
                 case 'S':
                     this.player.stand();
-//                    System.out.println(player.getName() + " stands!");
+                    System.out.println("The total value of the cards is " + player.valueOfCards());
                     break;
                    
                 default:
@@ -172,14 +174,53 @@ public class GameView {
                     continue;
             }
             this.dealer.evaluateMove(this.player);
-            break;
             
             } catch (Exception e) {
                 System.out.println("Thats not a valid input");
                     continue;
             }
-        }
+            
+            evaluateRound();
+            if (roundStatus) {
+                break;
+            } else {
+                dealerPerforAction();
+                if (!dealerRoundStatus) {
+                    break;
+                }
+            }
+        }//While ends
+        //TODO EVALUATE IF LOST ROUND OR NOT & BOT ACTION
     }
-    //TODO
+    
+    public void dealerPerforAction(){
+            int chances = (int) Math.floor(Math.random()*4);
+            if (chances != 1) {
+                System.out.println("Dealer went over 21, YOU WIN THE ROUND!");
+                player.addMoney(bet);
+                System.out.println("You now have $" + player.getMoney());
+                this.bet = 0;
+                dealerRoundStatus = false;
+            } else {
+                System.out.println("Dealer drew a card...he is not out yet.");
+                dealerRoundStatus = true;
+            }
+            
+    }
+    //TODO EVALUATE LOST METHOD HERE    
+    public void evaluateRound(){
+        if (player.valueOfCards() > 21) {
+            this.roundStatus = true;
+            System.out.println("Oh, It seems like you've gone over the maximum\nYou Lose the round");
+            player.addMoney(-(bet));
+            System.out.println("You now have $" + player.getMoney());
+            this.bet = 0;
+        } else {
+            this.roundStatus = false;
+        }
+        
+    }
     //Insert the action methods from player above.
+    
+    //TODO IMPLEMENT THE EVALUATE GAME
 }
