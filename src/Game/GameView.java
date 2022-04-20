@@ -5,6 +5,7 @@ import CardsAndDecks.Deck;
 import Player.Dealer;
 import Player.Player;
 import java.util.Scanner;
+import java.util.concurrent.TimeUnit;
 
 public class GameView {
 
@@ -19,7 +20,7 @@ public class GameView {
     Scanner sc = new Scanner(System.in);
 
     //TODO FILL THE GAME COMMANDS HERE
-    public void play() {
+    public void play() throws InterruptedException {
 
         deck.populateDeck();
         dealer.getDeckReady();
@@ -29,6 +30,7 @@ public class GameView {
         gameBegins();
         offerBetting();
         cardDealing();
+        performtAction();
 
     }//Play ends    
 
@@ -93,11 +95,12 @@ public class GameView {
         System.out.println("Nice to meet you " + player.getName());
     }
 
-    public void ruleExplanation() {
+    public void ruleExplanation() throws InterruptedException {
         System.out.println("Would you like me to explain to you the rules of the game?\n(Y)ES    or    (N)O");
         String desition = sc.nextLine();
         if (desition.charAt(0) == 'Y' || desition.charAt(0) == 'y') {
             System.out.println(rulesText());
+            TimeUnit.SECONDS.sleep(7);
         }
     }
 
@@ -124,6 +127,7 @@ public class GameView {
             System.out.print("Bet amount: ");
             try {
                 bet = sc.nextInt();
+                sc.nextLine();
                 if (bet <= 0 || bet > player.getMoney()) {
                     throw new Exception();
                 }
@@ -147,24 +151,33 @@ public class GameView {
     public void performtAction() {
         System.out.println("Would you like to (H)IT, (S)TAND?");
         while (true) {
-            actionOption = sc.nextLine().charAt(0);
+            try {
+                actionOption = sc.nextLine().charAt(0);
 
             switch (actionOption) {
                 case 'H':
                     this.player.hit(this.dealer.giveRandomCard());
                     System.out.println(player.getName() + " hits!");
+                    System.out.println(player.getHand().toString());
+                    System.out.println("The total value of the cards is " + player.valueOfCards());
                     break;
 
                 case 'S':
                     this.player.stand();
-                    System.out.println(player.getName() + " stands!");
+//                    System.out.println(player.getName() + " stands!");
                     break;
-
+                   
                 default:
                     System.out.println("Thats not a valid input");
                     continue;
             }
-            this.dealer.evaluateMove();
+            this.dealer.evaluateMove(this.player);
+            break;
+            
+            } catch (Exception e) {
+                System.out.println("Thats not a valid input");
+                    continue;
+            }
         }
     }
     //TODO

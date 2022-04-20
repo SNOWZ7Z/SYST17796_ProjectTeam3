@@ -14,6 +14,10 @@ public class CardsInHand{
         }
         return cardDisplay;
     }
+
+    public ArrayList<Card> getHand() {
+        return hand;
+    }
     
     public int getSize() {
         return this.hand.size();
