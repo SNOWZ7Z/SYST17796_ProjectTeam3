@@ -5,6 +5,8 @@ import CardsAndDecks.Deck;
 import Player.Dealer;
 import Player.Player;
 import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class GameView {
 
@@ -29,6 +31,7 @@ public class GameView {
         gameBegins();
         offerBetting();
         cardDealing();
+        performAction();
 
     }//Play ends    
 
@@ -87,7 +90,7 @@ public class GameView {
      */
     public void helloAndName() {
         System.out.println("Greetings player, my name is Dealy, and I will be your dealer of cards");
-        System.out.print("What's your name? \n My name is: ");
+        System.out.print("What's your name?\nMy name is: ");
         String playerName = sc.nextLine();
         player.setName(playerName);
         System.out.println("Nice to meet you " + player.getName());
@@ -95,9 +98,14 @@ public class GameView {
 
     public void ruleExplanation() {
         System.out.println("Would you like me to explain to you the rules of the game?\n(Y)ES    or    (N)O");
-        String desition = sc.nextLine();
-        if (desition.charAt(0) == 'Y' || desition.charAt(0) == 'y') {
-            System.out.println(rulesText());
+        String decision = sc.nextLine();
+        if (decision.charAt(0) == 'Y' || decision.charAt(0) == 'y') {
+            try {
+                System.out.println(rulesText());
+                Thread.sleep(2000);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(GameView.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
     }
 
@@ -116,6 +124,11 @@ public class GameView {
         System.out.println("\nBefore we begin, here is the initial balance for you to start betting:");
         System.out.println(player.getName() + " received " + player.getMoney());
         System.out.println("\nLet the game begin!\n");
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException ex) {
+            Logger.getLogger(GameView.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     public void offerBetting() {
@@ -129,7 +142,7 @@ public class GameView {
                 }
                 break;
             } catch (Exception e) {
-                System.out.println("Bets are meant to be a positive number, that is no more than the amount of money you have");
+                System.out.println("Why would you even try to bet negative money!");
                 sc.nextLine();
                 continue;
             }
@@ -138,16 +151,22 @@ public class GameView {
 
     public void cardDealing() {
         System.out.println("\nAlright, here are your cards");
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException ex) {
+            Logger.getLogger(GameView.class.getName()).log(Level.SEVERE, null, ex);
+        }
         //Code to add a random card to hand
         player.addToHand(dealer.giveRandomCard());
         player.addToHand(dealer.giveRandomCard());
         System.out.println(player.getHand().toString());
     }
 
-    public void performtAction() {
-        System.out.println("Would you like to (H)IT, (S)TAND?");
+    public void performAction() {
+        System.out.println("Would you like to (H)IT or (S)TAND?");
         while (true) {
-            actionOption = sc.nextLine().charAt(0);
+            String continueAction = sc.next();
+            actionOption = Character.toUpperCase(continueAction.charAt(0));
 
             switch (actionOption) {
                 case 'H':
@@ -157,7 +176,6 @@ public class GameView {
 
                 case 'S':
                     this.player.stand();
-                    System.out.println(player.getName() + " stands!");
                     break;
 
                 default:
