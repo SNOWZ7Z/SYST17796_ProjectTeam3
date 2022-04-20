@@ -6,6 +6,8 @@ import Player.Dealer;
 import Player.Player;
 import java.util.Scanner;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class GameView {
 
@@ -33,6 +35,7 @@ public class GameView {
         offerBetting();
         cardDealing();
         performtAction();
+        performAction();
 
     }//Play ends    
 
@@ -91,7 +94,7 @@ public class GameView {
      */
     public void helloAndName() {
         System.out.println("Greetings player, my name is Dealy, and I will be your dealer of cards");
-        System.out.print("What's your name? \n My name is: ");
+        System.out.print("What's your name?\nMy name is: ");
         String playerName = sc.nextLine();
         player.setName(playerName);
         System.out.println("Nice to meet you " + player.getName());
@@ -121,6 +124,11 @@ public class GameView {
         System.out.println("\nBefore we begin, here is the initial balance for you to start betting:");
         System.out.println(player.getName() + " received " + player.getMoney());
         System.out.println("\nLet the game begin!\n");
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException ex) {
+            Logger.getLogger(GameView.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     public void offerBetting() {
@@ -135,7 +143,7 @@ public class GameView {
                 }
                 break;
             } catch (Exception e) {
-                System.out.println("Bets are meant to be a positive number, that is no more than the amount of money you have");
+                System.out.println("Why would you even try to bet negative money!");
                 sc.nextLine();
                 continue;
             }
@@ -144,6 +152,11 @@ public class GameView {
 
     public void cardDealing() {
         System.out.println("\nAlright, here are your cards");
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException ex) {
+            Logger.getLogger(GameView.class.getName()).log(Level.SEVERE, null, ex);
+        }
         //Code to add a random card to hand
         player.addToHand(dealer.giveRandomCard());
         player.addToHand(dealer.giveRandomCard());
@@ -167,6 +180,7 @@ public class GameView {
                 case 'S':
                     this.player.stand();
                     System.out.println("The total value of the cards is " + player.valueOfCards());
+
                     break;
                    
                 default:
