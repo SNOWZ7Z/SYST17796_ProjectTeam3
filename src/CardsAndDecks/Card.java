@@ -2,10 +2,10 @@ package CardsAndDecks;
 
 public class Card {
     
-    Suits suit;
-    int value;
+    CardSuits suit;
+    CardValues value;
     
-    public Card(int value, Suits suit){
+    public Card(CardValues value, CardSuits suit){
         this.value = value;
         this.suit = suit;
     }
@@ -15,8 +15,8 @@ public class Card {
         return "The card is a " + this.value + " of " + this.suit;
     }
 
-    public int getValue() {
-        return value;
+    public CardValues getValue() {
+        return this.value;
     }
     
 }
