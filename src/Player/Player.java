@@ -1,19 +1,30 @@
 package Player;
 
 import CardsAndDecks.Card;
-import CardsAndDecks.CardsInHand;
+import CardsAndDecks.CardValues;
+import CardsAndDecks.Hand;
 
+/**
+ *
+ *
+ * @author Marcelo, Rzez, Uzair, Hannah April 2022
+ */
 public class Player {
 
-    private int money;
-    private String name;
-    private CardsInHand hand = new CardsInHand();
+    protected int money;
+    protected String name;
+    protected Hand hand = new Hand();
 
     public Player(String name) {
         this.name = name;
-        this.money = 100;
+        this.money = 0;
     }
 
+    public Player(String name, int money) {
+        this.name = name;
+        this.money = money;
+    }
+    
     public void hit(Card card) {
         this.hand.addCard(card);
     }
@@ -21,7 +32,6 @@ public class Player {
     public void stand() {
         System.out.println(getName() + " stands!");
     }
-
 
     public int getMoney() {
 
@@ -45,22 +55,23 @@ public class Player {
         this.name = name;
     }
 
-    public CardsInHand getHand() {
+    public Hand getHand() {
         return this.hand;
     }
 
-    public void setHand(CardsInHand hand) {
+    public void setHand(Hand hand) {
         this.hand = hand;
     }
 
     public void addToHand(Card card) {
         this.hand.addCard(card);
     }
-    
-    public int valueOfCards(){
+
+    public int valueOfCards() {
         int total = 0;
-        for (Card card: hand.getHand()) {
-            total += card.getValue();
+        for (Card card : hand.getHand()) {
+            CardValues value = card.getValue();
+            total += value.getValue(); // Returns the real int value
         }
         return total;
     }
