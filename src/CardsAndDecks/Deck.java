@@ -1,52 +1,47 @@
 package CardsAndDecks;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Random;
 
+/**
+ * Deck class, all functions of a deck.
+ *
+ * @author Marcelo, Rzez, Uzair, Hannah April 2022
+ */
 public class Deck {
-    
 
-    private static ArrayList<Card> fullDeck = new ArrayList<>();
-    
-    public void populateDeck(){
-        if (fullDeck.size() >= 1) {
-            fullDeck.clear();
-        }
-        for (int i = 1; i <= 4; i++) {
-            for (int j = 1; j <= 13; j++) {
-                
-                switch (i) {
-                    case 1:
-                        fullDeck.add(new Card(j, Suits.SPADES));
-                        break;
-                        
-                    case 2:
-                        fullDeck.add(new Card(j, Suits.CLUBS));
-                        break;
-                        
-                    case 3:
-                        fullDeck.add(new Card(j, Suits.DIAMONDS));
-                        break;
-                        
-                    case 4:
-                        fullDeck.add(new Card(j, Suits.HEARTS));
-                        break;
-                        
-                    default:
-                        throw new AssertionError();
-                }
+    private ArrayList<Card> deck;
+
+    public Deck() {
+        this.deck = new ArrayList<Card>();
+    }
+
+    public void populate() {
+        for (CardSuits suit : CardSuits.values()) {
+            for (CardValues value : CardValues.values()) {
+                this.deck.add(new Card(value, suit));
             }
-        } 
-    }
-    
-    public Card getRandomCard(){
-        int randomCardInt = (int)Math.floor(Math.random()* 52);
-        return fullDeck.get(randomCardInt); //RETURN A RANDOM CARD
+        }
     }
 
-    public static ArrayList<Card> getFullDeck() {
-        return fullDeck;
+    public void shuffle() {
+        Collections.shuffle(this.deck, new Random());
     }
-    
-    
+
+    public Card draw() {
+        if (this.deck.size() <= 0) {
+            this.populate();
+        }
+
+        int lastCardIndex = this.deck.size() - 1;
+        Card card = this.deck.get(lastCardIndex);
+        this.deck.remove(lastCardIndex);
+        return card;
+    }
+
+    public ArrayList<Card> getDeck() {
+        return this.deck;
+    }
+
 }
