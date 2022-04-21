@@ -2,6 +2,7 @@ package Game;
 
 import CardsAndDecks.Card;
 import CardsAndDecks.Deck;
+import CardsAndDecks.Hand;
 import Player.Dealer;
 import Player.Player;
 import java.util.Scanner;
@@ -11,33 +12,37 @@ import java.util.logging.Logger;
 
 public class GameView {
 
-    private String gameName = "Generic Blackjack 1v1";
+    private String gameName = "Blackjack Game";
     private Boolean running;
     private Boolean roundStatus;
     private Boolean dealerRoundStatus;
     private int bet = 0;
-    private char actionOption;
-    private Dealer dealer = new Dealer();
-    private Player player = new Player("Player1");
-    Deck deck = new Deck();
+    private char playerAction;
+    private Dealer dealer;
+    private Player player;
+    private Deck deck;
+    private Dialogue dialogue;
+    private int WAIT_TIME = 250;
 
     Scanner sc = new Scanner(System.in);
 
-    //TODO FILL THE GAME COMMANDS HERE
-    public void play() throws InterruptedException {
+//    //TODO FILL THE GAME COMMANDS HERE
+//    public void play() throws InterruptedException {
+//        ruleExplanation();
+//        gameBegins();
+//        offerBetting();
+//        cardDealing();
+//        performAction();
+//    }//Play ends    
+    public GameView() {
+    }
 
-        deck.populateDeck();
-        dealer.getDeckReady();
-
-        helloAndName();
-        ruleExplanation();
-        gameBegins();
-        offerBetting();
-        cardDealing();
-        performtAction();
-        performAction();
-
-    }//Play ends    
+    public void setup() {
+        this.createDialogue();
+        this.createDealer();
+        this.createPlayer();
+        this.createDeck();
+    }
 
     public void declareWinner() {
 
@@ -92,149 +97,209 @@ public class GameView {
     /**
      * Game voice lines interactions and methods
      */
-    public void helloAndName() {
-        System.out.println("Greetings player, my name is Dealy, and I will be your dealer of cards");
-        System.out.print("What's your name?\nMy name is: ");
-        String playerName = sc.nextLine();
-        player.setName(playerName);
-        System.out.println("Nice to meet you " + player.getName());
+    private void load() {
+        System.out.println("[     ]");
+        this.wait(WAIT_TIME);
+        System.out.println("[=    ]");
+        this.wait(WAIT_TIME);
+        System.out.println("[==   ]");
+        this.wait(WAIT_TIME);
+        System.out.println("[===  ]");
+        this.wait(WAIT_TIME);
+        System.out.println("[==== ]");
+        this.wait(WAIT_TIME);
+        System.out.println("[=====]");
+        this.wait(WAIT_TIME);
     }
 
-    public void ruleExplanation() throws InterruptedException {
-        System.out.println("Would you like me to explain to you the rules of the game?\n(Y)ES    or    (N)O");
-        String desition = sc.nextLine();
-        if (desition.charAt(0) == 'Y' || desition.charAt(0) == 'y') {
-            System.out.println(rulesText());
-            TimeUnit.SECONDS.sleep(7);
-        }
-    }
-
-    public String rulesText() {
-
-        return "1. The main goal of BlackJack is to beat the dealer's cards with your own.\n"
-                + "2. To beat the dealer, you must not go over 21 and either outscore the dealer or have him bust.\n"
-                + "3. At the start of the round the dealer will give out a card to the every player including themselves.\n"
-                + "4. From this point the player can hit or stand(Once per each round).\n"
-                + "5. Choosing 'Hit', will add another card to get closer to 21,\n"
-                + " choosing 'Stand', will make you not draw a card\n"
-                + "6. Each Card has it's own value, the numbered cards have face value while suited cards are worth 10.";
-    }
-
-    public void gameBegins() {
-        System.out.println("\nBefore we begin, here is the initial balance for you to start betting:");
-        System.out.println(player.getName() + " received " + player.getMoney());
-        System.out.println("\nLet the game begin!\n");
+    private void wait(int ms) {
         try {
-            Thread.sleep(1000);
+            Thread.sleep(ms);
         } catch (InterruptedException ex) {
             Logger.getLogger(GameView.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
-    public void offerBetting() {
-        System.out.println("How much would you like to bet this round");
-        for (;;) { //The funky "for"
-            System.out.print("Bet amount: ");
+    public void createDialogue() {
+        this.dialogue = Dialogue.getInstance();
+    }
+
+    public void createDealer() {
+        this.dialogue.creatingDealer();
+        this.load();
+        this.dealer = new Dealer("DealerAI");
+        this.dialogue.dealerCreated();
+    }
+
+    public void createPlayer() {
+        this.dialogue.greetPlayer(this.dealer.getName());
+        this.dialogue.askPlayerName();
+        String pName = sc.nextLine();
+        this.dialogue.creatingPlayer();
+        this.load();
+        this.player = new Player(pName, 1000);
+        this.dialogue.playerCreated(this.player.getName());
+    }
+
+    public void createDeck() {
+        this.dialogue.creatingDeck();
+        this.load();
+        this.deck = new Deck();
+        this.deck.populate();
+        this.deck.shuffle();
+        this.dialogue.deckCreated();
+    }
+
+    public void explainRules() {
+        this.dialogue.askPlayerGameRules();
+        String choice = sc.nextLine();
+        if (choice.charAt(0) == 'Y' || choice.charAt(0) == 'y') {
+            this.load();
+            this.dialogue.displayRules();
+        }
+    }
+
+    //TODO FILL THE GAME COMMANDS HERE
+    public void play() throws InterruptedException {
+        this.dialogue.preGameIntro(this.player.getName(), this.player.getMoney());
+        while (this.player.getMoney() > 0) {
+            this.betPhase();
+            this.dealPhase();
+            this.evaluatePhase();
+            this.clearHandPhase();
+        }
+    }//Play ends    
+
+    private void betPhase() {
+        this.dialogue.askPlayerBet();
+        while (true) {
+            this.dialogue.playerBetAmount();
             try {
-                bet = sc.nextInt();
+                this.bet = sc.nextInt();
                 sc.nextLine();
                 if (bet <= 0 || bet > player.getMoney()) {
                     throw new Exception();
                 }
                 break;
             } catch (Exception e) {
-                System.out.println("Why would you even try to bet negative money!");
+                this.dialogue.playerBetError();
                 sc.nextLine();
                 continue;
             }
         }
     }
 
-    public void cardDealing() {
-        System.out.println("\nAlright, here are your cards");
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException ex) {
-            Logger.getLogger(GameView.class.getName()).log(Level.SEVERE, null, ex);
+    private void dealPhase() {
+        this.dialogue.givePlayerCards();
+        // Give player and dealer two cards in hand
+        for (int i = 0; i < 2; i++) {
+            this.player.addToHand(this.deck.draw());
+            this.dealer.addToHand(this.deck.draw());
         }
-        //Code to add a random card to hand
-        player.addToHand(dealer.giveRandomCard());
-        player.addToHand(dealer.giveRandomCard());
-        System.out.println(player.getHand().toString());
-    }
+        this.dialogue.showPlayerHand(this.player.getHand());
 
-    public void performtAction() {
-        while (true) {
+        // player's turn
+        boolean playerTurn = true;
+        while (playerTurn) {
             System.out.println("Would you like to (H)IT, (S)TAND?");
             try {
-                actionOption = sc.nextLine().charAt(0);
+                String continueAction = sc.next();
+                playerAction = Character.toUpperCase(continueAction.charAt(0));
 
-            switch (actionOption) {
-                case 'H':
-                    this.player.hit(this.dealer.giveRandomCard());
-                    System.out.println(player.getName() + " hits!");
-                    System.out.println(player.getHand().toString());
-                    System.out.println("The total value of the cards is " + player.valueOfCards());
-                    break;
+                switch (playerAction) {
+                    case 'H':
+                        this.player.hit(this.deck.draw());
+                        System.out.println(this.player.getName() + " hits!");
+                      
+                        break;
 
-                case 'S':
-                    this.player.stand();
-                    System.out.println("The total value of the cards is " + player.valueOfCards());
+                    case 'S':
+                        this.player.stand();
+                        playerTurn = false;
+                        break;
 
-                    break;
-                   
-                default:
-                    System.out.println("Thats not a valid input");
-                    continue;
-            }
-            this.dealer.evaluateMove(this.player);
-            
-            } catch (Exception e) {
-                System.out.println("Thats not a valid input");
-                    continue;
-            }
-            
-            evaluateRound();
-            if (roundStatus) {
-                break;
-            } else {
-                dealerPerforAction();
-                if (!dealerRoundStatus) {
-                    break;
+                    default:
+                        System.out.println("Thats not a valid input");
+                        continue;
                 }
+
+            } catch (Exception e) {
+                System.out.println("Thats not a valid input.");
+                continue;
             }
-        }//While ends
-        //TODO EVALUATE IF LOST ROUND OR NOT & BOT ACTION
-    }
-    
-    public void dealerPerforAction(){
-            int chances = (int) Math.floor(Math.random()*4);
-            if (chances != 1) {
-                System.out.println("Dealer went over 21, YOU WIN THE ROUND!");
-                player.addMoney(bet);
-                System.out.println("You now have $" + player.getMoney());
-                this.bet = 0;
-                dealerRoundStatus = false;
-            } else {
-                System.out.println("Dealer drew a card...he is not out yet.");
-                dealerRoundStatus = true;
-            }
+            System.out.println(this.player.getHand().toString());
+            System.out.println("The total value of the cards is " + this.player.valueOfCards());
             
-    }
-    //TODO EVALUATE LOST METHOD HERE    
-    public void evaluateRound(){
-        if (player.valueOfCards() > 21) {
-            this.roundStatus = true;
-            System.out.println("Oh, It seems like you've gone over the maximum\nYou Lose the round");
-            player.addMoney(-(bet));
-            System.out.println("You now have $" + player.getMoney());
-            this.bet = 0;
-        } else {
-            this.roundStatus = false;
+            if (this.isHandOver21(this.player.getHand())) {
+                return;
+            }
         }
-        
+
+        // dealer's turn
+        boolean dealerTurn = true;
+        while (dealerTurn) {
+            switch (this.dealer.evaluateOwnHand()) {
+                case 1:
+                    this.dealer.hit(this.deck.draw());
+                    System.out.println(this.dealer.getName() + " hits!");
+                    break;
+
+                default:
+                    this.dealer.stand();
+                    dealerTurn = false;
+            }
+            System.out.println(this.dealer.getHand().toString());
+            System.out.println("The total value of the cards is " + this.dealer.valueOfCards());
+            
+            if (this.isHandOver21(this.dealer.getHand())) {
+                return;
+            }
+        }
     }
-    //Insert the action methods from player above.
-    
-    //TODO IMPLEMENT THE EVALUATE GAME
+
+    private boolean isHandOver21(Hand hand) {
+        int totalHand = 0;
+        for (Card card : hand.getHand()) {
+            totalHand += card.getValue().getValue();
+        }
+        if (totalHand > 21) {
+            return true;
+        }
+        return false;
+    }
+
+    private void evaluatePhase() {
+        if (this.isHandOver21(this.player.getHand())) {
+            this.dealerWins();
+        } else if (this.isHandOver21(this.dealer.getHand())) {
+            this.playerWins();
+        } else if (this.player.valueOfCards() > this.dealer.valueOfCards()) {
+            this.playerWins();
+        } else if (this.player.valueOfCards() < this.dealer.valueOfCards()) {
+            this.dealerWins();
+        } else if (this.player.valueOfCards() == this.dealer.valueOfCards()) {
+            this.tie();
+        }
+    }
+
+    private void clearHandPhase() {
+        this.player.getHand().clearHand();
+        this.dealer.getHand().clearHand();
+    }
+
+    private void playerWins() {
+        this.player.addMoney(this.bet);
+        System.out.println("You now have $" + this.player.getMoney());
+        this.bet = 0;
+    }
+
+    private void dealerWins() {
+        this.player.addMoney(-(this.bet));
+        this.bet = 0;
+    }
+
+    private void tie() {
+        this.bet = 0;
+    }
+
 }
