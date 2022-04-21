@@ -3,10 +3,13 @@ package CardsAndDecks;
 
 import java.util.ArrayList;
 
-public class CardsInHand{
-    
-    private ArrayList<Card> hand = new ArrayList<>();
+public class Hand {
+    private ArrayList<Card> hand;
 
+    public Hand() {
+        this.hand = new ArrayList<Card>();
+    }
+    
     public String getCards() {
         String cardDisplay = "";
         for (Card e : hand) {
@@ -16,7 +19,7 @@ public class CardsInHand{
     }
 
     public ArrayList<Card> getHand() {
-        return hand;
+        return this.hand;
     }
     
     public int getSize() {
@@ -27,6 +30,10 @@ public class CardsInHand{
         this.hand.add(card);
     }
 
+    public void clearHand() {
+        this.hand.clear();
+    }
+    
     @Override
     public String toString() {
         String fullHand = "";
