@@ -5,7 +5,8 @@ import java.util.Collections;
 import java.util.Random;
 
 /**
- * Deck class, all functions of a deck.
+ * Deck class, all functions of a deck
+ * populate, shuffle, and draw.
  *
  * @author Marcelo, Rzez, Uzair, Hannah April 2022
  */

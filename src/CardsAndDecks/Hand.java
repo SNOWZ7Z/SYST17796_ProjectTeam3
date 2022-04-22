@@ -3,6 +3,13 @@ package CardsAndDecks;
 
 import java.util.ArrayList;
 
+/**
+ * Hand class that gets the cards, size, hand,
+ * add and clear hand.
+ *
+ * @author Rzez, Marcelo, Uzair, Hannah April 2022
+ */
+
 public class Hand {
     private ArrayList<Card> hand;
 
