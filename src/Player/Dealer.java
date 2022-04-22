@@ -1,14 +1,13 @@
 package Player;
 
 import CardsAndDecks.Card;
-import CardsAndDecks.Deck;
-import java.util.ArrayList;
 import java.util.Random;
 
 /**
+ * Dealer class that extends the Player
+ * and plays against the Player.
  *
- *
- * @author Marcelo, Rzez, Uzair, Hannah April 2022
+ * @author Rzez, Marcelo, Uzair, Hannah April 2022
  */
 public class Dealer extends Player {
 
@@ -19,14 +18,15 @@ public class Dealer extends Player {
     @Override
     public void hit(Card card) {
         this.hand.addCard(card);
-        System.out.println("Dealer hits!");
+        System.out.println(getName() + " hits!");
     }
 
     @Override
     public void stand() {
-        System.out.println("Dealer stands!");
+        System.out.println(getName() + " stands!");
     }
 
+    //The probabilities to hit for a card
     public int evaluateOwnHand() {
         Random random = new Random();
         int rng = random.nextInt(100);
@@ -41,7 +41,7 @@ public class Dealer extends Player {
                 return 1;
             }
         } else if (handValue >= 17 && handValue <= 20) {
-            if (rng <= 15) {
+            if (rng <= 10) {
                 return 1;
             }
         }
