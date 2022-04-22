@@ -3,9 +3,9 @@ package Game;
 import CardsAndDecks.Hand;
 
 /**
+ * Dialogue class for handling all texts that needs printing.
  *
- *
- * @author Marcelo, Rzez, Uzair, Hannah April 2022
+ * @author Rzez, Marcelo, Uzair, Hannah April 2022
  */
 public class Dialogue {
 
@@ -67,8 +67,12 @@ public class Dialogue {
 
     public void preGameIntro(String playerName, int playerMoney) {
         System.out.println("\nBefore we begin, here is the initial balance for you to start betting:");
-        System.out.println(playerName + " received " + playerMoney);
+        System.out.println(playerName + " received $" + playerMoney);
         System.out.println("\nLet the game begin!\n");
+    }
+
+    public String dashSeperator() {
+        return "------------------------------------------";
     }
 
     public void askPlayerBet() {
@@ -76,7 +80,7 @@ public class Dialogue {
     }
 
     public void playerBetAmount() {
-        System.out.print("Bet amount: ");
+        System.out.print("Bet amount: $");
     }
 
     public void playerBetError() {
@@ -84,10 +88,45 @@ public class Dialogue {
     }
 
     public void givePlayerCards() {
-        System.out.println("\nAlright, here are your cards");
+        System.out.println(dashSeperator() + "\n");
+        System.out.println("Alright, here is your hand:");
+        System.out.println("\n" + dashSeperator());
     }
-    
+
     public void showPlayerHand(Hand hand) {
         System.out.println(hand.toString());
+    }
+
+    public void playerHitORStand() {
+        System.out.println("Would you like to (H)IT, (S)TAND?");
+    }
+
+    public void invalidInput() {
+        System.out.println("Thats not a valid input");
+    }
+
+    public void totalValueOfCards(Hand getHand, int valueOfCards) {
+        System.out.println(getHand.toString());
+        System.out.println("The total value of the cards is " + valueOfCards);
+        System.out.println(dashSeperator());
+    }
+
+    public void playerWinsRound(int getMoney) {
+        System.out.println("You now have $" + getMoney);
+    }
+
+    public void playersTie() {
+        System.out.println("It's a TIE! No money is lost or gained!");
+    }
+
+    public void playerWin(int getMoney) {
+        System.out.println("Congratulations! You won!");
+        System.out.println("You have accumulated $" + getMoney + "!");
+        System.out.println(dashSeperator());
+    }
+
+    public void playerLose(int getMoney) {
+        System.out.println("Hope you had fun! Better luck next time!");
+        System.out.println(dashSeperator());
     }
 }

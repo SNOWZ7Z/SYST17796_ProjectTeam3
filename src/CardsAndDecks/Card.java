@@ -1,5 +1,11 @@
 package CardsAndDecks;
 
+/**
+ * Card class
+ *
+ * @author Rzez, Marcelo, Uzair, Hannah April 2022
+ */
+
 public class Card {
     
     CardSuits suit;

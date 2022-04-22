@@ -6,16 +6,20 @@ import CardsAndDecks.Hand;
 import Player.Dealer;
 import Player.Player;
 import java.util.Scanner;
-import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+/**
+ * GameView class that controls the flow of the program.
+ *
+ * @author Rzez, Marcelo, Uzair, Hannah April 2022
+ */
+
 public class GameView {
 
+    //All private fields used in GameView class
     private String gameName = "Blackjack Game";
     private Boolean running;
-    private Boolean roundStatus;
-    private Boolean dealerRoundStatus;
     private int bet = 0;
     private char playerAction;
     private Dealer dealer;
@@ -26,32 +30,35 @@ public class GameView {
 
     Scanner sc = new Scanner(System.in);
 
-//    //TODO FILL THE GAME COMMANDS HERE
-//    public void play() throws InterruptedException {
-//        ruleExplanation();
-//        gameBegins();
-//        offerBetting();
-//        cardDealing();
-//        performAction();
-//    }//Play ends    
+    //TODO FILL THE GAME COMMANDS HERE
+    public void play() throws InterruptedException {
+        this.dialogue.preGameIntro(this.player.getName(), this.player.getMoney());
+        while (this.player.getMoney() > 0) {
+            this.betPhase();
+            this.dealPhase();
+            this.evaluatePhase();
+            this.clearHandPhase();
+            if (this.player.getMoney() >= 10000) {
+                this.declareWin();
+                break;
+            } else {
+                continue;
+            }
+        }
+        this.declareLose();
+    }//Play ends  
+
+    //GameView constructor
     public GameView() {
     }
 
+    //Main setup methods before game starts
     public void setup() {
         this.createDialogue();
         this.createDealer();
         this.createPlayer();
         this.createDeck();
     }
-
-    public void declareWinner() {
-
-    }//Declare winner ends
-
-    public void declareLooser() {
-
-    }// Declare looser ends
-
     /**
      * *
      * getter and Setters
@@ -96,6 +103,8 @@ public class GameView {
      */
     /**
      * Game voice lines interactions and methods
+     * Methods to create the setup method or
+     * Methods that setups introductions
      */
     private void load() {
         System.out.println("[     ]");
@@ -158,18 +167,9 @@ public class GameView {
             this.dialogue.displayRules();
         }
     }
+    //End of introductions
 
-    //TODO FILL THE GAME COMMANDS HERE
-    public void play() throws InterruptedException {
-        this.dialogue.preGameIntro(this.player.getName(), this.player.getMoney());
-        while (this.player.getMoney() > 0) {
-            this.betPhase();
-            this.dealPhase();
-            this.evaluatePhase();
-            this.clearHandPhase();
-        }
-    }//Play ends    
-
+    //Bet phase to prompt user how much to bet
     private void betPhase() {
         this.dialogue.askPlayerBet();
         while (true) {
@@ -187,8 +187,12 @@ public class GameView {
                 continue;
             }
         }
+        this.dialogue.dashSeperator();
     }
-
+    //End of betPhase
+    
+    //Deal phase to start the game by giving the player its cards
+    //Making deals, betting, player and dealer actions
     private void dealPhase() {
         this.dialogue.givePlayerCards();
         // Give player and dealer two cards in hand
@@ -197,11 +201,11 @@ public class GameView {
             this.dealer.addToHand(this.deck.draw());
         }
         this.dialogue.showPlayerHand(this.player.getHand());
-
-        // player's turn
+        
+        //Player's turn
         boolean playerTurn = true;
         while (playerTurn) {
-            System.out.println("Would you like to (H)IT, (S)TAND?");
+            this.dialogue.playerHitORStand();
             try {
                 String continueAction = sc.next();
                 playerAction = Character.toUpperCase(continueAction.charAt(0));
@@ -209,8 +213,6 @@ public class GameView {
                 switch (playerAction) {
                     case 'H':
                         this.player.hit(this.deck.draw());
-                        System.out.println(this.player.getName() + " hits!");
-                      
                         break;
 
                     case 'S':
@@ -219,44 +221,44 @@ public class GameView {
                         break;
 
                     default:
-                        System.out.println("Thats not a valid input");
+                        this.dialogue.invalidInput();
                         continue;
                 }
-
+                this.dialogue.dashSeperator();
             } catch (Exception e) {
-                System.out.println("Thats not a valid input.");
+                this.dialogue.invalidInput();
                 continue;
             }
-            System.out.println(this.player.getHand().toString());
-            System.out.println("The total value of the cards is " + this.player.valueOfCards());
-            
+            this.dialogue.totalValueOfCards(this.player.getHand(), this.player.valueOfCards());
+
             if (this.isHandOver21(this.player.getHand())) {
                 return;
             }
         }
 
-        // dealer's turn
+        //Dealer's turn
         boolean dealerTurn = true;
         while (dealerTurn) {
             switch (this.dealer.evaluateOwnHand()) {
                 case 1:
                     this.dealer.hit(this.deck.draw());
-                    System.out.println(this.dealer.getName() + " hits!");
                     break;
 
                 default:
                     this.dealer.stand();
                     dealerTurn = false;
             }
-            System.out.println(this.dealer.getHand().toString());
-            System.out.println("The total value of the cards is " + this.dealer.valueOfCards());
-            
+            this.dialogue.totalValueOfCards(this.dealer.getHand(), this.dealer.valueOfCards());
+
             if (this.isHandOver21(this.dealer.getHand())) {
                 return;
             }
         }
     }
+    //End of dealPhase
 
+    //Evaluation of hands, evaluating who wins the round,
+    //and clear hands for next round
     private boolean isHandOver21(Hand hand) {
         int totalHand = 0;
         for (Card card : hand.getHand()) {
@@ -286,10 +288,12 @@ public class GameView {
         this.player.getHand().clearHand();
         this.dealer.getHand().clearHand();
     }
-
+    //End of evaluations
+    
+    //Methods for who wins and tie
     private void playerWins() {
         this.player.addMoney(this.bet);
-        System.out.println("You now have $" + this.player.getMoney());
+        this.dialogue.playerWinsRound(this.player.getMoney());
         this.bet = 0;
     }
 
@@ -300,6 +304,19 @@ public class GameView {
 
     private void tie() {
         this.bet = 0;
-    }
+        this.dialogue.playersTie();
+    } 
+    //End of methods for who wins and tie
+
+    //Final results of winning or losing
+    public void declareWin() {
+        this.dialogue.playerWin(this.player.getMoney());
+    }//Declare winner ends
+
+    public void declareLose() {
+        if (this.player.getMoney() <= 0) {
+            this.dialogue.playerLose(this.player.getMoney());
+        }
+    }// Declare looser ends
 
 }

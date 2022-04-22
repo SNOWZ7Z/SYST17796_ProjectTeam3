@@ -5,12 +5,12 @@ import CardsAndDecks.CardValues;
 import CardsAndDecks.Hand;
 
 /**
+ * Player class with all available functions
+ * to money, name, hand, and hitting and standing.
  *
- *
- * @author Marcelo, Rzez, Uzair, Hannah April 2022
+ * @author Rzez, Marcelo, Uzair, Hannah April 2022
  */
 public class Player {
-
     protected int money;
     protected String name;
     protected Hand hand = new Hand();
@@ -24,8 +24,9 @@ public class Player {
         this.name = name;
         this.money = money;
     }
-    
+
     public void hit(Card card) {
+        System.out.println(getName() + " hits!");
         this.hand.addCard(card);
     }
 
@@ -44,7 +45,7 @@ public class Player {
 
     public void addMoney(int money) {
         this.money += money;
-        System.out.println("The user was given $" + money + " and now has a total of $" + this.money);
+        System.out.println("The user was given $" + money + "\nTotal : $" + this.money);
     }
 
     public String getName() {
